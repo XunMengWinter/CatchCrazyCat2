@@ -4,5 +4,5 @@
 Create in Cocos Creator
 
 ### Demo
-![普通模式&幻化为猫](https://github.com/XunMengWinter/CatchCrazyCat2/blob/main/demo/weizhushenjingmao.mp4)
+![普通模式&幻化为猫](https://raw.githubusercontent.com/XunMengWinter/CatchCrazyCat2/main/demo/weizhushenjingmao.mp4)
 
