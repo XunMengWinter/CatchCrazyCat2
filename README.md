@@ -8,5 +8,6 @@ Create in Cocos Creator
 
 ### 在线体验
 ![微信小游戏](https://github.com/XunMengWinter/CatchCrazyCat2/blob/main/demo/qrcode.jpg?raw=true)
+微信扫一扫
 
 
