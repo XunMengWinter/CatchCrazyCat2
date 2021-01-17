@@ -1,7 +1,7 @@
 # CatchCrazyCat2
 围住神经猫2
 
-Create in Cocos Creator
+Create by [Cocos Creator](https://www.cocos.com)
 
 ### Demo
 ![Catch Crazy Cat 2](https://github.com/XunMengWinter/CatchCrazyCat2/blob/main/demo/cat-crazy-cat2.gif?raw=true)
