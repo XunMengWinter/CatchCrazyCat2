@@ -4,7 +4,5 @@
 Create in Cocos Creator
 
 ### Demo
-<video id="video" controls="" preload="none">
-      <source id="mp4" src="https://raw.githubusercontent.com/XunMengWinter/CatchCrazyCat2/main/demo/weizhushenjingmao.mp4" type="video/mp4">
-      </video>
+![Catch Crazy Cat 2](https://github.com/XunMengWinter/CatchCrazyCat2/blob/main/demo/cat-crazy-cat2.gif?raw=true)
 
