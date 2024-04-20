@@ -13,6 +13,10 @@ cc.Class({
             default: null,
             type: cc.Node
         },
+        lightArea: {
+            default: null,
+            type: cc.Node
+        },
         gameResult: {
             default: null,
             type: cc.Node
@@ -53,7 +57,15 @@ cc.Class({
             default: null,
             type: cc.Prefab
         },
+        light: {
+            default: null,
+            type: cc.Prefab
+        },
         catNode: {
+            default: null,
+            type: cc.Node
+        },
+        lightNode: {
             default: null,
             type: cc.Node
         },
@@ -71,14 +83,11 @@ cc.Class({
         this.currentLevel = 0
         this.nextLevel()
         const that = this
-        // this.gameRestart.on(cc.Node.EventType.MOUSE_DOWN, function (event) {
-        //     that.currentLevel--
-        //     that.nextLevel()
-        // }, this);
         this.gameRestart.on(cc.Node.EventType.TOUCH_END, function (event) {
             that.currentLevel--
             that.nextLevel()
         }, this)
+        this.gameResult.on(cc.Node.EventType.TOUCH_END, (event) => { }, this)
     },
 
     addBoxs() {
@@ -118,21 +127,6 @@ cc.Class({
 
     addClickEvent(node) {
         const that = this
-        // 使用枚举类型来注册
-        // node.on(cc.Node.EventType.MOUSE_DOWN, function (event) {
-        //     if (this.isGameOver) {
-        //         return
-        //     }
-        //     if (that.catNode.x == node.x && that.catNode.y == node.y) {
-        //         return
-        //     }
-        //     node.pauseSystemEvents();
-        //     console.log('Mouse down');
-        //     console.log(node)
-        //     node.active = false
-        //     that.addBlock(node.x, node.y)
-        //     that.jumpCat()
-        // }, this);
         node.on(cc.Node.EventType.TOUCH_END, function (touch, event) {
             if (this.isGameOver) {
                 return
@@ -169,18 +163,32 @@ cc.Class({
             const node = gameAreaChildren[i]
             node.destroy()
         }
+        const lightAreaChildren = this.lightArea.children
+        for (let i = 0; i < lightAreaChildren.length; i++) {
+            const node = lightAreaChildren[i]
+            node.destroy()
+        }
         this.isGameOver = false
         this.gameResult.active = false
         this.boxNodes = []
         this.centerBoxNodes = []
         this.currentLevel++
-        this.titleLabel.string = "第" + this.currentLevel + "关"
+        const isNight = false
+        const day = Math.floor((this.currentLevel + 1) / 2)
+        this.titleLabel.string = "第 " + this.currentLevel + " 关"
         const stepList = [50, 40, 30, 20, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7]
         this.allSteps = stepList[this.currentLevel - 1]
         this.currentStep = 0
         const remainStep = this.allSteps - this.currentStep
         this.stepLabel.string = "已用步数：" + this.currentStep
         this.remainLabel.string = "剩余步数：" + remainStep
+
+
+        if (isNight) {
+            this.lightArea.active = true
+        } else {
+            this.lightArea.active = false
+        }
 
         const that = this
         cc.resources.load("prefab/block", function (err, prefab) {
@@ -191,9 +199,12 @@ cc.Class({
             that.box = prefab
             that.addBoxs()
 
-            cc.resources.load("prefab/cat", function (err, prefab) {
-                that.cat = prefab
-                that.addCat()
+            cc.resources.load("prefab/light", function (err, prefab) {
+                that.light = prefab
+                cc.resources.load("prefab/cat", function (err, prefab) {
+                    that.cat = prefab
+                    that.addCat()
+                })
             })
         })
     },
@@ -253,6 +264,7 @@ cc.Class({
         }
         if (randomNode) {
             this.catNode.setPosition(randomNode.x, randomNode.y)
+            this.lightNode.setPosition(randomNode.x, randomNode.y)
             if (Math.abs(randomNode.x) > (540 - 63) || Math.abs(randomNode.y) > (540 - 63)) {
                 this.gameOver()
             }
@@ -271,9 +283,13 @@ cc.Class({
     addCat() {
         const randomNode = this.centerBoxNodes[Math.floor(Math.random() * this.centerBoxNodes.length)]
         let newNode = cc.instantiate(this.cat)
+        let lightNode = cc.instantiate(this.light)
         this.gameArea.addChild(newNode)
+        this.lightArea.addChild(lightNode)
         this.catNode = newNode
+        this.lightNode = lightNode
         newNode.setPosition(randomNode.x, randomNode.y)
+        lightNode.setPosition(randomNode.x, randomNode.y)
     },
 
     addBlock(x, y) {

@@ -34,6 +34,7 @@ cc.Class({
             this.label.string = "幻化为猫"
             this.escapeArea.active = false
             this.gameArea.active = true
+
         } else {
             this.label.string = "返回角色"
             this.gameArea.active = false

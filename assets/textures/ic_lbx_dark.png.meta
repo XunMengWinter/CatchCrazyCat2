@@ -1,6 +1,7 @@
 {
-  "ver": "2.3.5",
+  "ver": "2.3.7",
   "uuid": "9e92e186-a2f5-4cbd-a5aa-74ed1e8ade57",
+  "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
@@ -12,8 +13,9 @@
   "platformSettings": {},
   "subMetas": {
     "ic_lbx_dark": {
-      "ver": "1.0.4",
+      "ver": "1.0.6",
       "uuid": "a51c5691-071e-4e1c-8ea5-1f9a14115f6b",
+      "importer": "sprite-frame",
       "rawTextureUuid": "9e92e186-a2f5-4cbd-a5aa-74ed1e8ade57",
       "trimType": "auto",
       "trimThreshold": 1,

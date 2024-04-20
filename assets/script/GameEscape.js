@@ -13,6 +13,10 @@ cc.Class({
             default: null,
             type: cc.Node
         },
+        lightArea: {
+            default: null,
+            type: cc.Node
+        },
         gameResult: {
             default: null,
             type: cc.Node
@@ -57,7 +61,15 @@ cc.Class({
             default: null,
             type: cc.Prefab
         },
+        light: {
+            default: null,
+            type: cc.Prefab
+        },
         catNode: {
+            default: null,
+            type: cc.Node
+        },
+        lightNode: {
             default: null,
             type: cc.Node
         },
@@ -74,14 +86,11 @@ cc.Class({
         this.currentLevel = 0
         this.nextLevel()
         const that = this
-        // this.gameRestart.on(cc.Node.EventType.MOUSE_DOWN, function (event) {
-        //     that.currentLevel--
-        //     that.nextLevel()
-        // }, this);
         this.gameRestart.on(cc.Node.EventType.TOUCH_END, function (event) {
             that.currentLevel--
             that.nextLevel()
         }, this)
+        this.gameResult.on(cc.Node.EventType.TOUCH_END, (event) => { }, this)
     },
 
     addBoxs() {
@@ -138,7 +147,7 @@ cc.Class({
             }
             if (Math.abs(that.catNode.x - node.x) < 126 && Math.abs(that.catNode.y - node.y) < 126) {
                 that.catNode.setPosition(node.x, node.y)
-
+                that.lightNode.setPosition(node.x, node.y)
                 if (Math.abs(node.x) > (540 - 63) || Math.abs(node.y) > (540 - 63)) {
                     that.nextLevel()
                     return
@@ -160,16 +169,32 @@ cc.Class({
             const node = gameAreaChildren[i]
             node.destroy()
         }
+        const lightAreaChildren = this.lightArea.children
+        for (let i = 0; i < lightAreaChildren.length; i++) {
+            const node = lightAreaChildren[i]
+            node.destroy()
+        }
         this.isGameOver = false
         this.gameResult.active = false
         this.boxNodes = []
         this.centerBoxNodes = []
         this.blockNodes = []
         this.catNode = null
+        this.lightNode = null
         this.currentLevel++
-        this.titleLabel.string = "第" + this.currentLevel + "关"
+
+        const isNight = (this.currentLevel % 2 == 0)
+        const day = Math.floor((this.currentLevel + 1) / 2)
+        this.titleLabel.string = "Day " + day + " " + (isNight ? "晚上" : "白天")
+
+        if (isNight) {
+            this.lightArea.active = true
+        } else {
+            this.lightArea.active = false
+        }
 
         const that = this
+
         cc.resources.load("prefab/box", function (err, prefab) {
             that.box = prefab
             that.addBoxs()
@@ -179,11 +204,14 @@ cc.Class({
                 that.genBlock(that.currentLevel)
                 that.currentStep = 0
                 that.stepLabel.string = "障碍数：" + that.blockNodes.length
-                that.remainLabel.string = "得分：" + that.currentStep
+                that.remainLabel.string = "已用步数：" + that.currentStep
 
-                cc.resources.load("prefab/cat", function (err, prefab) {
-                    that.cat = prefab
-                    that.addCat()
+                cc.resources.load("prefab/light", function (err, light) {
+                    that.light = light
+                    cc.resources.load("prefab/cat", function (err, prefab) {
+                        that.cat = prefab
+                        that.addCat()
+                    })
                 })
             })
         })
@@ -438,16 +466,20 @@ cc.Class({
 
             this.currentStep++
             this.stepLabel.string = "障碍数：" + this.blockNodes.length
-            this.remainLabel.string = "得分：" + this.currentStep
+            this.remainLabel.string = "已用步数：" + this.currentStep
         }
     },
 
     addCat() {
         const randomNode = this.centerBoxNodes[Math.floor(Math.random() * this.centerBoxNodes.length)]
         let newNode = cc.instantiate(this.cat)
+        let lightNode = cc.instantiate(this.light)
         this.gameArea.addChild(newNode)
+        this.lightArea.addChild(lightNode)
         this.catNode = newNode
+        this.lightNode = lightNode
         newNode.setPosition(randomNode.x, randomNode.y)
+        lightNode.setPosition(randomNode.x, randomNode.y)
     },
 
     addBlock(x, y) {
